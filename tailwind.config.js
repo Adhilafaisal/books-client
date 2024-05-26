@@ -7,7 +7,13 @@ export default {
   ],
   theme: {
     extend: {},
+    
   },
-  plugins: [require('flowbite/plugin')],
+  daisyui: {
+    themes: [],
+  },
+  
+   
+  plugins: [require('flowbite/plugin'),require('daisyui')],
 }
 

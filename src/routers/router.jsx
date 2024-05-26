@@ -18,6 +18,8 @@ import SignUp from "../components/SignUp";
 import Login from "../components/Login";
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
 import Logout from "../components/Logout";
+import Profile from "../components/Profile";
+import Cart from "../shop/Cart";
 
 
 const router = createBrowserRouter([
@@ -40,7 +42,12 @@ const router = createBrowserRouter([
         {
             path:'/blog',
             element:<Blog/>
-        },{
+        },
+        {
+          path:"/cart",
+          element:<Cart/>
+        },
+        {
           path:"/book/:id",
           element:<SingleBook/>,
           loader:({params}) =>fetch(`http://localhost:3002/book/${params.id}`)
@@ -73,11 +80,14 @@ const router = createBrowserRouter([
       path:"/sign-up",
       element:<SignUp/>
     },{
-      path:"login",
+      path:"/login",
       element: <Login/>
     },{
-      path:"logout",
+      path:"/logout",
       element:<Logout/>
+    },{
+      path:"/profile",
+      element:<Profile/>
     }
   ]);
   

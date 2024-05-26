@@ -1,3 +1,6 @@
 header,nav{
     z-index: 100001 !important;
 }
+.heartStar{
+    border-radius: 0px 28px 0px 28px;
+}

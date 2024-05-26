@@ -4,6 +4,7 @@ import { HiArrowSmRight, HiChartPie, HiInbox, HiOutlineCloudUpload, HiShoppingBa
 import userImg from '../assets/profile.jpg'
 
 
+
 const SideBar = () => {
   return (
     <Sidebar aria-label="Sidebar with content separator example">
@@ -21,11 +22,11 @@ const SideBar = () => {
           <Sidebar.Item href="/admin/dashboard/manage" icon={HiInbox}>
             Manage Books
           </Sidebar.Item>
-          <Sidebar.Item href="#" icon={HiUser}>
+          <Sidebar.Item href="/profile" icon={HiUser} >
             Users
           </Sidebar.Item>
-          <Sidebar.Item href="#" icon={HiShoppingBag}>
-            Products
+          <Sidebar.Item href="/shop" icon={HiShoppingBag}>
+            Books
           </Sidebar.Item>
           <Sidebar.Item href="/login" icon={HiArrowSmRight}>
             Sign In
