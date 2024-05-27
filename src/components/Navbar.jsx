@@ -4,13 +4,20 @@ import { Link } from "react-router-dom";
 
 import { FaBlog, FaBarsStaggered, FaXmark, FaRegUser, FaCartShopping } from "react-icons/fa6";
 import { AuthContext } from "../contexts/AuthProvider";
+import useCart from "../hooks/useCart";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
-
+  
+ 
   const { user } = useContext(AuthContext);
   console.log(user);
+  
+  const[cart,refetch]=useCart();
+  console.log(cart)
+  
+
 
   //toggle menu
   const toggleMenu = () => {
@@ -30,7 +37,14 @@ const Navbar = () => {
     return () => {
       window.addEventListener("scroll", handleScoll);
     };
+    
+
+
   }, []);
+
+  
+
+
   //navItems here
   const navItems = [
     { link: "Home", path: "/" },
@@ -78,7 +92,7 @@ const Navbar = () => {
               <Link to="/cart">
                 <button className=" hidden lg:flex items-center gap-2 rounded-full bg-blue-300 px-6 hover:bg-green-300">
                   <FaCartShopping className="w-5 text-black  " />
-                  <span className="badge badge-sm indicator-item">0</span>
+                  <span className="badge badge-sm indicator-item">{cart.length || 0}</span>
                 </button>
               </Link>
               </div>

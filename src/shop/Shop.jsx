@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Card } from "flowbite-react";
 import {} from "react-icons/fa";
 import { FaFilter } from "react-icons/fa6";
+import { AuthContext } from "../contexts/AuthProvider";
+import { useContext } from "react";
+import Swal from 'sweetalert2'
 
 const Shop = () => {
   const [books, setBooks] = useState([]);
@@ -86,6 +89,71 @@ const Shop = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+
+  const {user} =useContext(AuthContext)
+
+   //add to cart
+
+   const handleAddtoCart = (book) => {
+    const {
+      _id,
+      bookTitle,
+      authorName,
+      imageURL,
+      category,
+      bookDescription,
+      bookPDFURL,
+      price,
+    } = book;
+    //  console.log("btn is checked", book)
+    if (user && user?.email) {
+      const cartItem = {
+        bookItemId: _id,
+        bookTitle,
+        imageURL,
+        price,
+        quantity: 1,
+        email: user.email,
+      };
+      //  console.log(cartItem)
+      fetch("http://localhost:3002/cart", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(cartItem),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          // console.log(data);
+          if (data.acknowledged) {
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "Item added to cart",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        });
+    }else{
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please login first',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/login')
+          navigate(location.pathname, { replace: true });
+        }
+      })
+    }
+
+  };
+
+
+
 
   return (
     <div className="mt-28 px-4 lg:px24">
@@ -205,7 +273,7 @@ const Shop = () => {
                 <span className="text-sm text-red-500">$</span>
                 {book.price}
               </p>
-              <button className="btn bg-blue-700 px-3 text-white rounded">
+              <button className="btn bg-blue-700 px-3 text-white rounded" onClick={()=>handleAddtoCart(book)}>
                 Add to Cart
               </button>
             </div>

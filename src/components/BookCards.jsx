@@ -10,25 +10,76 @@ import "swiper/css/pagination";
 
 // import required modules
 import { Pagination } from "swiper/modules";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaHeart } from "react-icons/fa6";
 import { AuthContext } from "../contexts/AuthProvider";
+import Swal from 'sweetalert2'
 
-const BookCards = ({ headline, books}) => {
-  const {_id,bookTitle,authorName,imageURL,category,bookDescription,bookPDFURL,price}=books
+const BookCards = ({ headline, books }) => {
   const [isHeartFilled, setIsHeartFilled] = useState(false);
-  const {user} =useContext(AuthContext)
-//  console.log(user)
+  const { user } = useContext(AuthContext);
+  //  console.log(user)
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   //add to cart
 
   const handleAddtoCart = (book) => {
-//  console.log("btn is checked", book)
-if(user && user?.email){
- const cartItem = {
-   
- }
-}
+    const {
+      _id,
+      bookTitle,
+      authorName,
+      imageURL,
+      category,
+      bookDescription,
+      bookPDFURL,
+      price,
+    } = book;
+    //  console.log("btn is checked", book)
+    if (user && user?.email) {
+      const cartItem = {
+        bookItemId: _id,
+        bookTitle,
+        imageURL,
+        price,
+        quantity: 1,
+        email: user.email,
+      };
+      //  console.log(cartItem)
+      fetch("http://localhost:3002/cart", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(cartItem),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          // console.log(data);
+          if (data.acknowledged) {
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "Item added to cart",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        });
+    }else{
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please login first',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/login')
+          navigate(location.pathname, { replace: true });
+        }
+      })
+    }
+
   };
 
   const handleHeartClick = () => {
@@ -77,16 +128,15 @@ if(user && user?.email){
                 </div>
               </Link>
               <div className="flex flex-col gap-2">
-                
-                <div
+                {/* <div
                   className={`rating gap-1 absolute right-2 top-2 p-4 heartStar bg-blue-600 ${
                     isHeartFilled ? "text bg-rose-500" : "text-white"
                   }`}
                   onClick={handleHeartClick}
                 >
                   <FaHeart className="w-4 h-4 text-white" />
-                </div>
-                
+                </div> */}
+
                 <div>
                   <h3 className="font-bold">{book.bookTitle}</h3>
                   <p className="text-base">{book.authorName}</p>
@@ -96,7 +146,10 @@ if(user && user?.email){
                     <span className="text-sm text-red-500">$</span>
                     {book.price}
                   </p>
-                  <button className="btn bg-blue-700 px-3 text-white rounded" onClick={()=>handleAddtoCart(book)}>
+                  <button
+                    className="btn bg-blue-700 px-3 text-white rounded"
+                    onClick={() => handleAddtoCart(book)}
+                  >
                     Add to Cart
                   </button>
                 </div>
