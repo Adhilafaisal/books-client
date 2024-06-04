@@ -1,6 +1,7 @@
 import React,{useState} from 'react'
 
 import { useLoaderData, useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import {
   Button,
   Checkbox,
@@ -67,7 +68,13 @@ const EditBooks = () => {
     })
       .then((res) => res.json()).then(data => {
         // console.log(data);
-        alert("Book is updated successfully");
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Book updated successfully",
+          showConfirmButton: false,
+          timer: 1500
+        });
         
       })
 

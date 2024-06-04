@@ -13,7 +13,7 @@ import { Pagination } from "swiper/modules";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaHeart } from "react-icons/fa6";
 import { AuthContext } from "../contexts/AuthProvider";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 const BookCards = ({ headline, books }) => {
   const [isHeartFilled, setIsHeartFilled] = useState(false);
@@ -25,62 +25,143 @@ const BookCards = ({ headline, books }) => {
 
   //add to cart
 
+  // const handleAddtoCart = (book) => {
+  //   const {
+  //     _id,
+
+  //     bookTitle,
+  //     authorName,
+  //     imageURL,
+  //     category,
+  //     bookDescription,
+  //     bookPDFURL,
+  //     price,
+  //   } = book;
+  //   //  console.log("btn is checked", book)
+  //   if (user && user?.email) {
+  //     const cartItem = {
+  //       bookItemId: _id,
+
+  //       bookTitle,
+  //       imageURL,
+  //       price,
+  //       quantity: 1,
+  //       email: user.email,
+  //     };
+  //     //  console.log(cartItem)
+  //     fetch("http://localhost:3002/cart", {
+  //       method: "POST",
+  //       headers: {
+  //         "content-type": "application/json",
+  //       },
+  //       body: JSON.stringify(cartItem),
+  //     })
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         // console.log(data);
+  //         if (data.acknowledged) {
+  //           Swal.fire({
+  //             position: "top-end",
+  //             icon: "success",
+  //             title: "Book added to cart",
+  //             showConfirmButton: false,
+  //             timer: 1500
+  //           });
+  //         }
+  //       });
+  //   } else {
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Oops...",
+  //       text: "Please login first",
+  //     }).then((result) => {
+  //       if (result.isConfirmed) {
+  //         navigate("/login");
+  //         navigate(location.pathname, { replace: true });
+  //       }
+  //     });
+  //   }
+  // };
+
+
   const handleAddtoCart = (book) => {
     const {
-      _id,
-      bookTitle,
-      authorName,
-      imageURL,
-      category,
-      bookDescription,
-      bookPDFURL,
-      price,
-    } = book;
-    //  console.log("btn is checked", book)
-    if (user && user?.email) {
-      const cartItem = {
-        bookItemId: _id,
+        _id,
         bookTitle,
+        authorName,
         imageURL,
+        category,
+        bookDescription,
+        bookPDFURL,
         price,
-        quantity: 1,
-        email: user.email,
-      };
-      //  console.log(cartItem)
-      fetch("http://localhost:3002/cart", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(cartItem),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          // console.log(data);
-          if (data.acknowledged) {
-            Swal.fire({
-              position: "top-end",
-              icon: "success",
-              title: "Item added to cart",
-              showConfirmButton: false,
-              timer: 1500,
-            });
-          }
-        });
-    }else{
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Please login first',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate('/login')
-          navigate(location.pathname, { replace: true });
-        }
-      })
-    }
+    } = book;
 
-  };
+    if (user && user?.email) {
+        const cartItem = {
+            bookItemId: _id,
+            bookTitle,
+            imageURL,
+            price,
+            quantity: 1,
+            email: user.email,
+        };
+
+        fetch("http://localhost:3002/cart", {
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+            },
+            body: JSON.stringify(cartItem),
+        })
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error(`Request failed: ${res.status} ${res.statusText}`);
+            }
+            return res.json();
+        })
+        .then((data) => {
+            if (data.acknowledged) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Book added to cart",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Something went wrong!",
+                });
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Something went wrong!",
+            });
+        });
+    } else {
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Please login first",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                navigate("/login");
+                navigate(location.pathname, { replace: true });
+            }
+        });
+    }
+};
+
+
+
+
+
 
   const handleHeartClick = () => {
     setIsHeartFilled(!isHeartFilled);

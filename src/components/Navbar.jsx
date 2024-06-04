@@ -6,16 +6,20 @@ import { FaBlog, FaBarsStaggered, FaXmark, FaRegUser, FaCartShopping } from "rea
 import { AuthContext } from "../contexts/AuthProvider";
 import useCart from "../hooks/useCart";
 
+import useAuth from "../hooks/useAuth";
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
-  
  
-  const { user } = useContext(AuthContext);
+ 
+  const { user,loading } = useAuth();
   console.log(user);
   
   const[cart,refetch]=useCart();
   console.log(cart)
+
+
   
 
 
@@ -42,6 +46,7 @@ const Navbar = () => {
 
   }, []);
 
+  
   
 
 
@@ -99,7 +104,8 @@ const Navbar = () => {
             
 
           <div className="">
-             {user ? (
+             {user ?  (
+              
               <button
                 className="btn hidden lg:flex items-center gap-2 rounded-full px-6 bg-blue-600 text-white hover:bg-green-700 "
                 onClick={() => logOut()}

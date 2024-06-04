@@ -2,9 +2,13 @@ import React, { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthProvider";
 import googleLogo from "../assets/google-logo.svg"
+import Swal from "sweetalert2";
+import axios from "axios";
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
 const SignUp = () => {
-  const { createUser, loginWithGoogle } = useContext(AuthContext);
+  const { createUser, loginWithGoogle,updateUserProfile } = useContext(AuthContext);
+  const axiosPublic = useAxiosPublic();
   const [error, setError] = useState("error");
 
   const location = useLocation();
@@ -23,9 +27,25 @@ const SignUp = () => {
       .then((userCredential) => {
         // Signed up
         const user = userCredential.user;
-        alert("Sign up successfully");
-        navigate(from, { replace: true });
-        // ...
+        updateUserProfile(form.email.value,form.photoURL.value).then(() => {
+          const userInfo={
+            name:form.name.value,
+            email:form.email.value,
+          }
+          axiosPublic.post('/users', userInfo)
+          .then((response)=> {
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "Sign up successfully",
+              showConfirmButton: false,
+              timer: 1500
+            });
+            navigate(from, { replace: true });
+            // ...
+          })
+        })
+        
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -41,8 +61,23 @@ const SignUp = () => {
     loginWithGoogle()
     .then((result) => {
       const user = result.user;
-      alert("Sign up successfully");
-      navigate(from, { replace: true });
+      const userInfo={
+        name:result?.user?.displayName,
+        email:result?.user?.email,
+      }
+      axiosPublic.post('/users', userInfo)
+      .then((response)=> {
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Sign up successfully",
+          showConfirmButton: false,
+          timer: 1500
+        });
+        navigate(from, { replace: true });
+        // ...
+      })
+      
     })
     .catch((error) => {
       const errorMessage = error.message;
@@ -71,6 +106,7 @@ const SignUp = () => {
                     name="email"
                     type="text"
                     className="peer  h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
+                    autoComplete="email"
                     placeholder="Email address"
                   />
                 </div>
@@ -80,6 +116,7 @@ const SignUp = () => {
                     name="password"
                     type="password"
                     className="peer  h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
+                     autoComplete="new-password" // Or "current-password" depending on the context
                     placeholder="Password"
                   />
                 </div>

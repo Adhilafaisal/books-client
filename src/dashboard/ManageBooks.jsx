@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Table,Button } from "flowbite-react";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const ManageBooks = () => {
   const [allBooks, setAllBooks] = useState([]);
@@ -8,7 +9,7 @@ const ManageBooks = () => {
     fetch("http://localhost:3002/all-books")
       .then((res) => res.json())
       .then((data) => setAllBooks(data));
-  }, []);
+  }, [allBooks]);
 
   //delete book
   const handleDelete= (id) => {
@@ -16,8 +17,15 @@ const ManageBooks = () => {
     fetch(`http://localhost:3002/book/${id}`,{
       method: "DELETE",
     }).then(res=>res.json()).then(data=>{
-      alert("Book is deleted successfully")
-      setAllBooks(data)})
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Book deleted successfully",
+        showConfirmButton: false,
+        timer: 1500
+      });
+      // setAllBooks(data)
+    })
   };
 
   return (
@@ -50,7 +58,7 @@ const ManageBooks = () => {
               </Table.Cell>
               <Table.Cell className="border-b-2 border-r-2 border-r-slate-600">{book.authorName}</Table.Cell>
               <Table.Cell className="border-b-2 border-r-2 border-r-slate-600">{book.category}</Table.Cell>
-              <Table.Cell className="border-b-2 border-r-2 border-r-slate-600">{book.price}</Table.Cell>
+              <Table.Cell className="border-b-2 border-r-2 border-r-slate-600"><span>$</span>{book.price}</Table.Cell>
               <Table.Cell className="border-b-2 border-r-2 border-r-slate-600">
                <Button> <Link
                   to={`/admin/dashboard/edit-books/${book._id}`}

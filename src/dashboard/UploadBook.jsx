@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 
 import {
   Button,
@@ -65,7 +66,13 @@ const UploadBook = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-      alert("Book Uploaded Successfully!!");
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Book added to cart",
+          showConfirmButton: false,
+          timer: 1500
+        });
         form.reset()
       });
   };

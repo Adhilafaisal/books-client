@@ -36,7 +36,13 @@ const Cart = () => {
         }
       });
   }else{
-    alert("Item cannot be 0")
+    Swal.fire({
+      position: "top-end",
+      icon: "warning",
+      title: "Minimum quantity should be 1",
+      showConfirmButton: false,
+      timer: 1500
+    });
   }
 }
 
@@ -83,6 +89,7 @@ const Cart = () => {
             if (data.deletedCount > 0) {
               refetch();
               Swal.fire("Deleted!", "Your file has been deleted.", "success");
+              
             }
           });
       }
@@ -175,7 +182,7 @@ const Cart = () => {
             Total Price:$
             {cart.reduce((sum, book) => sum + book.price * book.quantity, 0).toFixed(2)}
           </p>
-          <Link to="/checkout" className="btn bg-blue-600 ">
+          <Link to="/process-checkout" className="btn bg-blue-600 ">
             Checkout
           </Link>
         </div>

@@ -2,6 +2,8 @@ import React, { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthProvider";
 import googleLogo from "../assets/google-logo.svg"
+import Swal from 'sweetalert2'
+import axios from "axios";
 
 const Login = () => {
 
@@ -21,9 +23,32 @@ const Login = () => {
     login(email, password).then((userCredential) => {
         // Signed up 
         const user = userCredential.user;
-        alert("Login successfully");
-        navigate(from, { replace: true });
-        // ...
+        const userInfo={
+          name:form.name.value,
+          email:form.email.value,
+        }
+        axios.post('http://localhost:3002/users', userInfo)
+        .then((response)=> {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Sign up successfully",
+            showConfirmButton: false,
+            timer: 1500
+          });
+          navigate(from, { replace: true });
+          // ...
+        })
+        // Swal.fire({
+        //   position: "top-end",
+        //   icon: "success",
+        //   title: "Login successfully",
+        //   showConfirmButton: false,
+        //   timer: 1500
+        // });
+        // navigate(from, { replace: true });
+        // // ...
+       
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -48,6 +73,34 @@ const Login = () => {
       
     });
   }
+
+  // const handleRegister =()=>{
+  //   loginWithGoogle()
+  //   .then((result) => {
+  //     const user = result.user;
+  //     const userInfo={
+  //       name:result?.user?.displayName,
+  //       email:result?.user?.email,
+  //     }
+  //     axios.post('http://localhost:3002/users', userInfo)
+  //     .then((response)=> {
+  //       Swal.fire({
+  //         position: "top-end",
+  //         icon: "success",
+  //         title: "Sign up successfully",
+  //         showConfirmButton: false,
+  //         timer: 1500
+  //       });
+  //       navigate(from, { replace: true });
+  //       // ...
+  //     })
+      
+  //   })
+  //   .catch((error) => {
+  //     const errorMessage = error.message;
+  //     setError(errorMessage);
+  //   });
+  // }
   return (
     <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
     <div className="relative py-3 sm:max-w-xl sm:mx-auto">
@@ -70,6 +123,7 @@ const Login = () => {
                   name="email"
                   type="text"
                   className="peer  h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
+                  autoComplete="email"
                   placeholder="Email address"
                 />
               </div>
@@ -79,6 +133,7 @@ const Login = () => {
                   name="password"
                   type="password"
                   className="peer  h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
+                  autoComplete="new-password" // Or "current-password" depending on the context
                   placeholder="Password"
                 />
               </div>

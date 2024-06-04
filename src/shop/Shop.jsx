@@ -5,6 +5,7 @@ import { FaFilter } from "react-icons/fa6";
 import { AuthContext } from "../contexts/AuthProvider";
 import { useContext } from "react";
 import Swal from 'sweetalert2'
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Shop = () => {
   const [books, setBooks] = useState([]);
@@ -14,6 +15,10 @@ const Shop = () => {
   const [sortOption, setSortOption] = useState("default");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8);
+  
+
+
+
 
   // useEffect(() => {
   //   fetch("http://localhost:3002/all-books")
@@ -92,6 +97,9 @@ const Shop = () => {
 
 
   const {user} =useContext(AuthContext)
+  const navigate = useNavigate();
+  const location = useLocation();
+
 
    //add to cart
 
@@ -131,7 +139,7 @@ const Shop = () => {
             Swal.fire({
               position: "top-end",
               icon: "success",
-              title: "Item added to cart",
+              title: "Book added to cart",
               showConfirmButton: false,
               timer: 1500,
             });
@@ -152,6 +160,7 @@ const Shop = () => {
 
   };
 
+  
 
 
 
@@ -234,6 +243,16 @@ const Shop = () => {
           >
             History
           </button>
+          <button
+            onClick={() => filterItems("Children")}
+            className={
+              selectedCategory === "Children"
+                ? "bg-blue-700 px-4 py-2 rounded text-white font-medium"
+                : "bg-blue-300 px-4 py-2 rounded text-white font-medium hover:bg-blue-400 transition duration-300"
+            }
+          >
+            Children
+          </button>
         </div>
 
         {/* sort btns */}
@@ -263,11 +282,13 @@ const Shop = () => {
       <div className="grid gap-8 my-12 lg:grid-cols-4 sm:grid-cols-2 md:grid-cols-3 grid-cols-1">
         {currentItems.map((book) => (
           <Card className="max-w-sm " key={book._id} book={book}>
+            <Link to={`/book/${book._id}`}>
             <img src={book.imageURL} alt="" className="hover:scale-105 transition duration-200 md:h-72 md:w-72 w-full" />
 
             <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
               <p>{book.bookTitle}</p>
             </h5>
+            </Link>
             <div className="flex flex-row px-3 items-center justify-between">
               <p className="font-semibold">
                 <span className="text-sm text-red-500">$</span>

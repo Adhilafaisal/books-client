@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { AuthContext } from '../contexts/AuthProvider'
 import { useLocation, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const Logout = () => { 
     const {logOut}= useContext(AuthContext)
@@ -13,7 +14,13 @@ const Logout = () => {
     const handleLogout =()=>{
      logOut().then(() => {
         // Sign-out successful.
-        alert("Logout successfully")
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Logout successfully",
+          showConfirmButton: false,
+          timer: 1500
+        });
         navigate(from, { replace: true });
       }).catch((error) => {
         // An error happened.
